@@ -6,3 +6,5 @@ name = "pypi"
 [packages]
 'uvicorn[standard]' = "==0.23.2"
 fastapi = "==0.104.0"
+pydantic = "==2.4.2"
+'sqlalchemy[asyncio]' = "==2.0.22"
