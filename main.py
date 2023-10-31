@@ -33,6 +33,7 @@ class Node(BaseModel):
     path: str
     children: List['Node'] = None
     properties: Dict
+    created: str
 
     class Config:
         orm_mode = True
@@ -51,9 +52,9 @@ async def create_item(item: Item):
 
 @app.get("/node")
 async def getNodes(db: Session = Depends(get_db)):
-    result = db.execute(text(f"SELECT * FROM construct_node_tree2('Rocket')")).scalar()
+    result = db.execute(text(f"SELECT * FROM construct_node_tree('Rocket')")).scalar()
     print(result)
     if not result:
         raise HTTPException(status_code=404, detail="No data found")
-    return list(result)
+    return result
 
