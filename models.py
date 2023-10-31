@@ -1,17 +1,14 @@
+from sqlalchemy import Column, String, Integer, DateTime, func, Text
+
 from database import Base
-from sqlalchemy import Column, String, Integer, ForeignKey
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import relationship, backref
-
-from utils import Timestamp
 
 
-class Node(Base, Timestamp):
-    __tablename__ = 'node'
+class DeviceConfiguration(Base):
+    __tablename__ = 'device_configurations'
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    path = Column(String, unique=True,index=True)
-    parent_id = Column(Integer, ForeignKey('node.id'), nullable=True)
-    parent = relationship('Node', remote_side=[id], backref=backref('children', lazy=True))
-    properties = Column(JSONB)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    device_id = Column(String(255), unique=True, nullable=False)
+    app_config = Column(Text, nullable=False)
+    depth_config = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
