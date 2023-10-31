@@ -2,7 +2,7 @@ import os
 
 from fastapi import UploadFile
 
-from main import STATIC_DIR
+from config import settings
 from src.resource.models import DeviceConfiguration
 
 
@@ -13,7 +13,7 @@ from src.resource.models import DeviceConfiguration
 #     session.close()
 
 def save_file_to_static_folder(file: UploadFile, filename: str) -> str:
-    file_path = os.path.join(STATIC_DIR, filename)
+    file_path = os.path.join(settings.STATIC_DIR, filename)
     with open(file_path, "wb") as buffer:
         buffer.write(file.file.read())
     return file_path

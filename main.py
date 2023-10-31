@@ -4,10 +4,12 @@ from fastapi import FastAPI, UploadFile, HTTPException
 from fastapi.params import File
 from pydantic import BaseModel
 
+from src.resource.utils import save_file_to_static_folder
+
 app = FastAPI()
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, "static")
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 
 @app.get("/ping")
@@ -15,11 +17,12 @@ async def root():
     return {"message": "Hello World"}
 
 
-def save_file_to_static_folder(file: UploadFile, filename: str) -> str:
-    file_path = os.path.join(STATIC_DIR, filename)
-    with open(file_path, "wb") as buffer:
-        buffer.write(file.file.read())
-    return file_path
+# def save_file_to_static_folder(file: UploadFile, filename: str) -> str:
+#     file_path = os.path.join(STATIC_DIR, filename)
+#     with open(file_path, "wb") as buffer:
+#         buffer.write(file.file.read())
+#     return file_path
+
 
 class DeviceConfig(BaseModel):
     device_id: str
