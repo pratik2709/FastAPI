@@ -1,4 +1,3 @@
-# main.py
 from typing import Optional, List, Dict
 
 from pydantic import BaseModel
