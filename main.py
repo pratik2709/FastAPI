@@ -1,7 +1,6 @@
 from fastapi import FastAPI, UploadFile, HTTPException
 from fastapi.params import File, Depends
 from sqlalchemy.orm import Session
-from starlette.testclient import TestClient
 
 from database import get_db
 from src.resource.utils import save_file_to_static_folder, create_device_configuration
@@ -26,6 +25,4 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
         return {"message": "Configuration created successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-client = TestClient(app)
 
