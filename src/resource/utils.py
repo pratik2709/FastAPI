@@ -1,16 +1,19 @@
 import os
 
 from fastapi import UploadFile
+from sqlalchemy.orm import Session
 
 from config import settings
 from src.resource.models import DeviceConfiguration
 
 
-# def create_device_configuration(device_id: str, app_config: str, depth_config: str):
-#     device_config = DeviceConfiguration(device_id=device_id, app_config=app_config, depth_config=depth_config)
-#     session.add(device_config)
-#     session.commit()
-#     session.close()
+def create_device_configuration(db: Session, device_id: str, app_config: str, depth_config: str):
+    device_config = DeviceConfiguration(device_id=device_id,
+                                        app_config_uri=app_config,
+                                        depth_config_uri=depth_config)
+    db.add(device_config)
+    db.commit()
+
 
 def save_file_to_static_folder(file: UploadFile, filename: str) -> str:
     file_path = os.path.join(settings.STATIC_DIR, filename)
