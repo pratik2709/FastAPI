@@ -1,10 +1,13 @@
 import os
 
-from fastapi import UploadFile
+import yaml
+from fastapi import UploadFile, HTTPException
+from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
 from config import settings
 from src.resource.models import DeviceConfiguration
+from src.resource.schemas import AppConfig
 
 
 def create_device_configuration(db: Session, device_id: str, app_config: str, depth_config: str):
@@ -24,3 +27,16 @@ def save_file_to_static_folder(file: UploadFile, filename: str) -> str:
     with open(file_path, "wb") as buffer:
         buffer.write(file.file.read())
     return file_path
+
+
+def validate_app_config(file_content: str) -> AppConfig:
+    try:
+        parsed_content = yaml.safe_load(file_content)
+        print(parsed_content)
+        return AppConfig(**parsed_content)
+
+    except yaml.YAMLError:
+        raise HTTPException(status_code=400, detail="Invalid YAML content.")
+    except ValidationError as e:
+        print(e)
+        raise HTTPException(status_code=400, detail=e.errors())

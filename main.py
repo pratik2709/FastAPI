@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from auth import get_api_key
 from database import get_db
-from src.resource.utils import save_file_to_static_folder, create_device_configuration, get_device_configuration
+from src.resource.utils import save_file_to_static_folder, create_device_configuration, get_device_configuration, \
+    validate_app_config
 
 app = FastAPI()
 
@@ -23,6 +24,8 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
                                db: Session = Depends(get_db),
                                api_key: str = Depends(get_api_key)):
     try:
+        app_config_content = await app_config.read()
+        validated_config = validate_app_config(app_config_content.decode())
         app_config_path = save_file_to_static_folder(app_config, f"{device_id}_app_config.yaml")
         depth_config_path = save_file_to_static_folder(depth_config, f"{device_id}_depth.yaml")
 
