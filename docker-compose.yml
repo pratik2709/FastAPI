@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  httpnewserver:
+    build:
+      context: ./scripts/nginxconf
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+    depends_on:
+      - inviol
+
+  inviol:
+    build:
+      context: .
+      dockerfile: BaseDockerfile
+    ports:
+      - "5001:5001"    
+    deploy:
+      replicas: 1
+    networks:
+      - webnet
+
+networks:
+  webnet:    
