@@ -105,6 +105,16 @@ def test_create_configuration():
     assert "app_config_path" in response.json()
     assert "depth_config_path" in response.json()
 
+    # Delete configuration
+    response = client.delete(f"/device-configurations/{device_id}/", headers=headers)
+    assert response.status_code == 200
+    assert response.json() == {"message": "Configuration marked as inactive successfully"}
+
+    # fetch again
+    response = client.get(f"/device-configurations/{device_id}/", headers=headers)
+    assert response.status_code == 404
+    assert response.json() == {"detail":"Configuration not found"}
+
     os.remove('static/' + str(device_id + '_app_config.yaml'))
     os.remove('static/' + str(device_id + '_depth.yaml'))
 
