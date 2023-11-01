@@ -1,7 +1,7 @@
-from typing import Dict, List
+from typing import Dict
 from uuid import UUID
 
-from pydantic import BaseModel, UUID4, validator
+from pydantic import BaseModel, validator
 
 
 class Device(BaseModel):

@@ -1,13 +1,11 @@
-import json
 import os
+import uuid
 from io import BytesIO
 
 import yaml
 from fastapi.testclient import TestClient
 
 from main import app
-import uuid
-
 
 client = TestClient(app)
 

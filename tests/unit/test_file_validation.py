@@ -1,5 +1,4 @@
 import uuid
-from io import BytesIO
 
 import pytest
 import yaml
