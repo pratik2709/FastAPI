@@ -15,6 +15,10 @@ def create_device_configuration(db: Session, device_id: str, app_config: str, de
     db.commit()
 
 
+def get_device_configuration(db: Session, device_id: str) -> DeviceConfiguration:
+    return db.query(DeviceConfiguration).filter(DeviceConfiguration.device_id == device_id).first()
+
+
 def save_file_to_static_folder(file: UploadFile, filename: str) -> str:
     file_path = os.path.join(settings.STATIC_DIR, filename)
     with open(file_path, "wb") as buffer:

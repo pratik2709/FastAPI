@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from auth import get_api_key
 from database import get_db
-from src.resource.utils import save_file_to_static_folder, create_device_configuration
+from src.resource.utils import save_file_to_static_folder, create_device_configuration, get_device_configuration
 
 app = FastAPI()
 
@@ -31,3 +31,17 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
+
+@app.get("/device-configurations/{device_id}/")
+async def get_configuration(device_id: str, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    try:
+        device_config = get_device_configuration(db, device_id)
+        if not device_config:
+            raise HTTPException(status_code=404, detail="Configuration not found")
+        return {
+            "app_config_path": device_config.app_config_uri,
+            "depth_config_path": device_config.depth_config_uri
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
