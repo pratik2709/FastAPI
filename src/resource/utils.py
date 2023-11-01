@@ -30,7 +30,11 @@ def create_device_configuration(db: Session, device_id: str, app_config: str, de
 
 
 def get_device_configuration(db: Session, device_id: str) -> DeviceConfiguration:
-    return db.query(DeviceConfiguration).filter(DeviceConfiguration.device_id == device_id).first()
+    return db.query(DeviceConfiguration).filter(
+        DeviceConfiguration.device_id == device_id,
+        DeviceConfiguration.is_active == True  # Only fetch active records
+    ).first()
+
 
 
 #todo: handle out of space error
