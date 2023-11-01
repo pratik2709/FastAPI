@@ -25,27 +25,40 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
                                db: Session = Depends(get_db),
                                api_key: str = Depends(get_api_key)):
     logger.info(f"Received request to create configuration for device_id: {device_id}")
-    try:
-        # todo: use a generator function to save memory
-        app_config_content = await app_config.read()
-        validate_app_config(app_config_content.decode(), device_id)
-        app_config_path = save_file_to_static_folder(app_config, f"{device_id}_app_config.yaml")
-        depth_config_path = save_file_to_static_folder(depth_config, f"{device_id}_depth.yaml")
-        create_device_configuration(db, device_id, app_config_path, depth_config_path)
-        return {"message": "Configuration created successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    # todo: use a generator function to save memory
+    app_config_content = await app_config.read()
+    validate_app_config(app_config_content.decode(), device_id)
+    app_config_path = save_file_to_static_folder(app_config, f"{device_id}_app_config.yaml")
+    depth_config_path = save_file_to_static_folder(depth_config, f"{device_id}_depth.yaml")
+    create_device_configuration(db, device_id, app_config_path, depth_config_path)
+    return {"message": "Configuration created successfully"}
 
 
+# todo: check for active records only
 @app.get("/device-configurations/{device_id}/")
 async def get_configuration(device_id: str, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
+    device_config = get_device_configuration(db, device_id)
+    if not device_config:
+        raise HTTPException(status_code=404, detail="Configuration not found")
+    return {
+        "app_config_path": device_config.app_config_uri,
+        "depth_config_path": device_config.depth_config_uri
+    }
+
+
+@app.delete("/device-configurations/{device_id}/")
+async def deactivate_configuration(device_id: str,
+                                   db: Session = Depends(get_db),
+                                   api_key: str = Depends(get_api_key)):
     try:
         device_config = get_device_configuration(db, device_id)
         if not device_config:
-            raise HTTPException(status_code=404, detail="Configuration not found")
-        return {
-            "app_config_path": device_config.app_config_uri,
-            "depth_config_path": device_config.depth_config_uri
-        }
+            raise HTTPException(status_code=404, detail="Device configuration not found.")
+
+        device_config.is_active = False
+        db.commit()
+
+        return {"message": "Configuration marked as inactive successfully"}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+

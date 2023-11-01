@@ -66,3 +66,10 @@ docker-compose --build
 ```
 http://127.0.0.1/docs
 ```
+
+## Missing
+- azure funcs
+- concurrency errors
+- postgres db container
+- download actual files using the get API
+- other endpoints (delete and edit)
