@@ -1,7 +1,9 @@
 import os
 
+from dotenv import load_dotenv
 from fastapi.security import APIKeyHeader
 
+load_dotenv()
 
 class Settings:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
