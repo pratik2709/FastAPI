@@ -26,7 +26,7 @@ def create_device_configuration(db: Session, device_id: str, app_config: str, de
     except Exception as ex:
         db.rollback()
         logger.error(f"Something went wrong. : {device_id}. Error: {str(ex)}")
-        raise HTTPException(status_code=500, detail="Database error.")
+        raise HTTPException(status_code=500, detail="Something went wrong.")
 
 
 def get_device_configuration(db: Session, device_id: str) -> DeviceConfiguration:
@@ -49,4 +49,7 @@ def validate_app_config(file_content: str, device_id: int) -> AppConfig:
         raise HTTPException(status_code=400, detail="Invalid YAML content.")
     except ValidationError as e:
         logger.error(f"Error while creating configuration for device_id: {device_id}. Error: {str(e)}")
-        raise HTTPException(status_code=400, detail=e.errors())
+        raise HTTPException(status_code=400, detail="Invalid YAML content. Missing or improper fields")
+    except Exception as ex:
+        logger.error(f"Something went wrong. : {device_id}. Error: {str(ex)}")
+        raise HTTPException(status_code=500, detail="Something went wrong.")

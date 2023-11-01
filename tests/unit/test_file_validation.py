@@ -71,12 +71,23 @@ def test_validate_app_config_valid():
     assert result is not None
 
 
-# def test_validate_app_config_invalid_yaml():
-#     invalid_content = """
-#     alive_poll_time: 1
-#     depth:
-#     """
-#     with pytest.raises(HTTPException) as exc_info:
-#         validate_app_config(invalid_content, 1)
-#     assert exc_info.value.status_code == 400
-#     assert "Invalid YAML content" in str(exc_info.value.detail)
+def test_validate_app_config_invalid_yaml():
+    invalid_content  = {
+        "alive_poll_time": 1,
+        "depth": {
+            "tolerance_m": 2.5,
+            "deck_length": {
+                "max": 16,
+                "default": 14
+            }
+        },
+        "device": {
+            "id": str(uuid.uuid4()),
+            "type": "PC"
+        }
+    }
+    content = yaml.dump(invalid_content).encode('utf-8')
+    with pytest.raises(HTTPException) as exc_info:
+        validate_app_config(content, 1)
+    assert exc_info.value.status_code == 400
+    assert "Invalid YAML content. Missing or improper fields" in str(exc_info.value.detail)
