@@ -1,23 +1,15 @@
-import os
-
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, HTTPException
 from fastapi.params import File, Depends
 from sqlalchemy.orm import Session
 
-from config import settings
+from auth import get_api_key
 from database import get_db
 from src.resource.utils import save_file_to_static_folder, create_device_configuration
 
 app = FastAPI()
 
 load_dotenv()
-
-def get_api_key(api_key_header: str = Depends(settings.api_key_header)):
-    valid_api_keys = os.environ.get("VALID_API_KEYS", "").split(",")
-    if api_key_header in valid_api_keys:
-        return api_key_header
-    raise HTTPException(status_code=400, detail="Invalid API key")
 
 
 @app.get("/ping")
