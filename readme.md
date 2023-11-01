@@ -72,4 +72,4 @@ http://127.0.0.1/docs
 - concurrency errors
 - postgres db container
 - download actual files using the get API
-- other endpoints (delete and edit)
+- other endpoints (edit)

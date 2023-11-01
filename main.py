@@ -34,7 +34,6 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
     return {"message": "Configuration created successfully"}
 
 
-# todo: check for active records only
 @app.get("/device-configurations/{device_id}/")
 async def get_configuration(device_id: str, db: Session = Depends(get_db), api_key: str = Depends(get_api_key)):
     device_config = get_device_configuration(db, device_id)
