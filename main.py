@@ -1,3 +1,5 @@
+import logging
+
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, HTTPException
 from fastapi.params import File, Depends
@@ -5,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from auth import get_api_key
 from database import get_db
+from logger_config import logger
 from src.resource.utils import save_file_to_static_folder, create_device_configuration, get_device_configuration, \
     validate_app_config
 
@@ -23,10 +26,11 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
                                depth_config: UploadFile = File(...),
                                db: Session = Depends(get_db),
                                api_key: str = Depends(get_api_key)):
+    logger.info(f"Received request to create configuration for device_id: {device_id}")
     try:
-        # todo: use a generator function to save memory ?
+        # todo: use a generator function to save memory
         app_config_content = await app_config.read()
-        validated_config = validate_app_config(app_config_content.decode())
+        validate_app_config(app_config_content.decode(), device_id)
         app_config_path = save_file_to_static_folder(app_config, f"{device_id}_app_config.yaml")
         depth_config_path = save_file_to_static_folder(depth_config, f"{device_id}_depth.yaml")
 
@@ -34,7 +38,6 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
         return {"message": "Configuration created successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
 
 
 @app.get("/device-configurations/{device_id}/")
