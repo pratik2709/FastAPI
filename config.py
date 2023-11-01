@@ -1,6 +1,5 @@
 import os
 
-from decouple import config
 from fastapi.security import APIKeyHeader
 
 

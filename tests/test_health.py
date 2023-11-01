@@ -27,8 +27,13 @@ def test_create_configuration():
     app_config_file = BytesIO(app_config_content)
     depth_config_file = BytesIO(depth_config_content)
 
+    headers = {
+        "X-API-KEY": "key1"
+    }
+
     response = client.post(
         f"/device-configurations/{device_id}/",
+        headers=headers,
         files={
             "app_config": ("test_app_config.yaml", app_config_file),
             "depth_config": ("test_depth_config.yaml", depth_config_file)
@@ -40,3 +45,4 @@ def test_create_configuration():
 
     os.remove('static/' + str(device_id + '_app_config.yaml'))
     os.remove('static/' + str(device_id + '_depth.yaml'))
+
