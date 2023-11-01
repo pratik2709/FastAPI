@@ -33,7 +33,6 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
         validate_app_config(app_config_content.decode(), device_id)
         app_config_path = save_file_to_static_folder(app_config, f"{device_id}_app_config.yaml")
         depth_config_path = save_file_to_static_folder(depth_config, f"{device_id}_depth.yaml")
-
         create_device_configuration(db, device_id, app_config_path, depth_config_path)
         return {"message": "Configuration created successfully"}
     except Exception as e:
