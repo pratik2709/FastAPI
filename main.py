@@ -24,6 +24,7 @@ async def create_configuration(device_id: str, app_config: UploadFile = File(...
                                db: Session = Depends(get_db),
                                api_key: str = Depends(get_api_key)):
     try:
+        # todo: use a generator function to save memory ?
         app_config_content = await app_config.read()
         validated_config = validate_app_config(app_config_content.decode())
         app_config_path = save_file_to_static_folder(app_config, f"{device_id}_app_config.yaml")
