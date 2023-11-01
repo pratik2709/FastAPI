@@ -43,6 +43,11 @@ def test_create_configuration():
     assert response.status_code == 200
     assert response.json() == {"message": "Configuration created successfully"}
 
+    response = client.get(f"/device-configurations/{device_id}/", headers=headers)
+    assert response.status_code == 200
+    assert "app_config_path" in response.json()
+    assert "depth_config_path" in response.json()
+
     os.remove('static/' + str(device_id + '_app_config.yaml'))
     os.remove('static/' + str(device_id + '_depth.yaml'))
 
